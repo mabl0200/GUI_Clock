@@ -22,12 +22,14 @@ namespace Labben
             errormessage.ForeColor = Color.Red;
             Alarm1message.ForeColor = Color.Red;
             alarm2message.ForeColor = Color.Red;
+            SnzBtn.Visible = false;
         }
         public bool setalarm = false;
         public bool setalarm2 = false;
         Clock clock = new Clock();
         Alarm alarm1 = new Alarm();
         Alarm alarm2 = new Alarm();
+        
         
         
         private void ClockHourInput(object sender, EventArgs e) //Tar emot användarens tim-val och ser till så de bara skrivs nummer mellan 0-23.
@@ -122,6 +124,8 @@ namespace Labben
                 var test = alarm1.AlarmFunction();
                 Alarm1message.Text = "WAKI WAKI HANDS OFF SNAKEY!!!!";
                 this.webBrowser1.DocumentText = string.Format(test[0],test[1]);
+                SnzBtn.Visible = true;
+                
             }
             if (int.Parse(clockminute.Text) >= alarm2.AlarmMinute && int.Parse(clockminute.Text) == count2)
             {
@@ -136,6 +140,7 @@ namespace Labben
                 alarm2message.Text = "ALARM 2!!!!!!";
                 this.webBrowser1.DocumentText = string.Format(test2[0], test2[1]);
             }
+            
             
         }
 
@@ -153,6 +158,8 @@ namespace Labben
                     clockminute.Text = clockMinuteInput.Text.ToString();
                     clock.Minute = int.Parse(clockMinuteInput.Text);
                     clock.Hour = int.Parse(clockHourInput.Text);
+                    SnzBtn.Visible = false;
+                    Alarm1message.Text = "";
                 }
                 else
                 {
@@ -162,6 +169,7 @@ namespace Labben
                     clockMinuteInput.ReadOnly = true;
                     setalarm = true;
                     setalarm2 = true;
+                    
                 }
                 
             }
@@ -341,6 +349,39 @@ namespace Labben
             catch (Exception)
             {
             }
+        }
+
+        private void SnzBtn_Click(object sender, EventArgs e)
+        {
+            var snz = clock.Minute + 5;
+            
+            if (snz > 59)
+            {
+                snz -= 60;
+                int hour = int.Parse(alarmHinput.Text) + 1;
+                if (hour > 23)
+                {
+                    hour = 0;
+                    alarmHinput.Text = "0" + hour.ToString();
+                }
+                else if (hour < 23)
+                {
+                    alarmHinput.Text = hour.ToString();
+                }
+
+                alarmMinput.Text = "0" + snz.ToString();
+                
+            }
+            else if (snz < 59 && snz > 9)
+            {
+                alarmMinput.Text = snz.ToString();
+            }
+            else if (snz < 10)
+            {
+                alarmMinput.Text = "0" + snz.ToString();
+            }
+            SnzBtn.Visible = false;
+            Alarm1message.Text = "";
         }
     }
 }
